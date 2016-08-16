@@ -37,3 +37,16 @@ class Queue:
 
 	def find(self, item):
 		return item in self.items
+
+	def unique(self):
+		unique_items = []
+
+		for item in self.items:
+			if not item in unique_items:
+				unique_items.append(item)
+
+		self.items = unique_items
+
+	def remove(self, item):
+		while item in self.items:
+			self.items.remove(item)

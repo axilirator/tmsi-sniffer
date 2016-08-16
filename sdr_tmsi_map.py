@@ -66,9 +66,17 @@ class TMSIManager(UDPServer):
 		printl(cat, DPAGING, msg)
 
 	def handle_tmsi(self, tmsi):
+		# Yes, print this one first
 		self.print_tmsi(tmsi)
+
+		# Determine our current state
 		if self.recording:
+			# Add every possible TMSI
 			self.record.add(tmsi)
+		else:
+			# Filter outsider TMSIs
+			for record in self.records:
+				record.remove(tmsi)
 
 	def handle_p1(self, l3):
 		# This can contain two MIs
@@ -119,6 +127,7 @@ class TMSIManager(UDPServer):
 		self.recording = True
 
 	def stop(self):
+		self.record.unique() # We don't need any duplicates
 		self.records.append(self.record)
 		self.recording = False
 
@@ -130,6 +139,7 @@ class TMSIManager(UDPServer):
 	def cross(self):
 		if len(self.records) > 1:
 			result = self.records[0]
+
 			for recod in self.records[1:]:
 				result = Queue(result, recod)
 
