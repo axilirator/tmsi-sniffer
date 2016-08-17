@@ -75,8 +75,8 @@ class RadioInterface(gr.top_block):
 		##################################################
 		# GR-GSM Magic
 		##################################################
-		self.gsm_bcch_ccch_demapper = grgsm.universal_ctrl_chans_demapper(
-			0, ([2,6,12,16,22,26,32,36,42,46]), ([1,2,2,2,2,2,2,2,2,2]))
+		self.gsm_bcch_ccch_demapper = grgsm.gsm_bcch_ccch_demapper(
+			timeslot_nr = 0)
 
 		self.blocks_rotator = blocks.rotator_cc(
 			-2 * pi * self.shiftoff / self.samp_rate)
@@ -88,7 +88,9 @@ class RadioInterface(gr.top_block):
 		self.socket_pdu = blocks.socket_pdu(
 			"UDP_CLIENT", "127.0.0.1", str(sock_port), 10000, False)
 
-		self.gsm_clck_ctrl = grgsm.clock_offset_control(shift_fc)
+		self.gsm_clck_ctrl = grgsm.clock_offset_control(
+			shift_fc, self.samp_rate, osr = 4)
+
 		self.gsm_ccch_decoder = grgsm.control_channels_decoder()
 		self.gsm_receiver = grgsm.receiver(4, ([0]), ([]))
 
@@ -105,8 +107,8 @@ class RadioInterface(gr.top_block):
 		self.msg_connect((self.gsm_receiver, 'measurements'),
 			(self.gsm_clck_ctrl, 'measurements'))
 
-		self.msg_connect((self.gsm_clck_ctrl, 'ppm'),
-			(self.gsm_input, 'ppm_in'))
+		self.msg_connect((self.gsm_clck_ctrl, 'ctrl'),
+			(self.gsm_input, 'ctrl_in'))
 
 		self.msg_connect((self.gsm_bcch_ccch_demapper, 'bursts'),
 			(self.gsm_ccch_decoder, 'bursts'))
