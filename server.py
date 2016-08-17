@@ -81,18 +81,18 @@ class CommandLine:
 
 		# Server specific
 		elif cmd == "rxtune" and argc == 1:
-			app.server.broadcast("CMD RXTUNE %s" % argv[0])
+			app.server.broadcast("CMD RXTUNE %s\n" % argv[0])
 		elif cmd == "paging":
 			if argc == 1:
 				subcmd = argv[0]
 				if subcmd == "start":
-					app.server.broadcast("CMD START")
+					app.server.broadcast("CMD START\n")
 				elif subcmd == "stop":
-					app.server.broadcast("CMD STOP")
+					app.server.broadcast("CMD STOP\n")
 				elif subcmd == "cross":
-					app.server.broadcast("CMD CROSS")
+					app.server.broadcast("CMD CROSS\n")
 				elif subcmd == "flush":
-					app.server.broadcast("CMD FLUSH")
+					app.server.broadcast("CMD FLUSH\n")
 
 		# Unknown command
 		elif cmd != "":
